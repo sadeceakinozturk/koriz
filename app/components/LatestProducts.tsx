@@ -1,31 +1,33 @@
-const products = [
-  {
-    title: "Ceviz Ağacına Portre",
-    artist: "Akın Öztürk",
-    category: "Portre",
-    price: "2.500 TL",
-    likes: 128,
-    image: "/images/artworks/artwork-1.jpg.jpg",
-  },
-  {
-    title: "Kurt Motifli Ahşap Tablo",
-    artist: "Elif Kaya",
-    category: "Manzara",
-    price: "1.800 TL",
-    likes: 96,
-    image: "/images/artworks/artwork-2.jpg.jpg",
-  },
-  {
-    title: "Osmanlı Hat Eseri",
-    artist: "Mehmet Usta",
-    category: "Hat Sanatı",
-    price: "3.200 TL",
-    likes: 154,
-    image: "/images/artworks/artwork-3.jpg.jpg",
-  },
-];
+"use client";
+
+import { useEffect, useState } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 
 export default function LatestProducts() {
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function getArtworks() {
+      const artworksQuery = query(
+        collection(db, "artworks"),
+        orderBy("createdAt", "desc"),
+        limit(3)
+      );
+
+      const snapshot = await getDocs(artworksQuery);
+
+      const artworks = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setProducts(artworks);
+    }
+
+    getArtworks();
+  }, []);
+
   return (
     <section className="bg-[#f6efe3] px-6 py-20">
       <div className="mx-auto max-w-7xl">
@@ -47,7 +49,7 @@ export default function LatestProducts() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {products.map((product) => (
             <div
-              key={product.title}
+              key={product.id}
               className="overflow-hidden rounded-3xl bg-white shadow-md transition hover:-translate-y-1 hover:shadow-xl"
             >
               <img
@@ -63,7 +65,7 @@ export default function LatestProducts() {
                   </span>
 
                   <span className="text-sm text-gray-500">
-                    ❤️ {product.likes}
+                    ❤️ {product.likes || 0}
                   </span>
                 </div>
 
@@ -71,11 +73,13 @@ export default function LatestProducts() {
                   {product.title}
                 </h3>
 
-                <p className="mt-2 text-sm text-gray-500">{product.artist}</p>
+                <p className="mt-2 text-sm text-gray-500">
+                  {product.artistEmail}
+                </p>
 
                 <div className="mt-6 flex items-center justify-between">
                   <p className="text-lg font-extrabold text-[#c46a2b]">
-                    {product.price}
+                    {product.price} TL
                   </p>
 
                   <button className="rounded-full bg-[#2b1a12] px-5 py-2 text-sm font-bold text-white hover:bg-[#c46a2b]">
