@@ -2,27 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs,} from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Link from "next/link";
-
-const works = [
-  {
-    title: "Ceviz Ağacına Portre",
-    image: "/images/artworks/artwork-1.jpg.jpg",
-    likes: 128,
-  },
-  {
-    title: "Kurt Motifli Tablo",
-    image: "/images/artworks/artwork-2.jpg.jpg",
-    likes: 96,
-  },
-  {
-    title: "Osmanlı Hat Eseri",
-    image: "/images/artworks/artwork-3.jpg.jpg",
-    likes: 154,
-  },
-];
 
 export default function ProfilePage() {
   const [name, setName] = useState("Yükleniyor...");
@@ -30,6 +12,7 @@ export default function ProfilePage() {
   const [city, setCity] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [bio, setBio] = useState("");
+  const [works, setWorks] = useState<any[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -50,6 +33,19 @@ export default function ProfilePage() {
         setSpecialty(data.specialty || "");
         setBio(data.bio || "");
       }
+      const artworksQuery = query(
+  collection(db, "artworks"),
+  where("artistId", "==", user.uid)
+);
+
+const artworksSnap = await getDocs(artworksQuery);
+
+const userWorks = artworksSnap.docs.map((doc) => ({
+  id: doc.id,
+  ...doc.data(),
+}));
+
+setWorks(userWorks);
     });
 
     return () => unsubscribe();
@@ -94,7 +90,7 @@ export default function ProfilePage() {
 
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           <div className="rounded-2xl bg-[#f6efe3] p-5 text-center">
-            <p className="text-2xl font-extrabold">0</p>
+            <p className="text-2xl font-extrabold">{works.length}</p>
             <p className="text-sm text-gray-600">Eser</p>
           </div>
 
