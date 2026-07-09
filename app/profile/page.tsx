@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import Link from "next/link";
 
 const works = [
   {
@@ -26,6 +27,9 @@ const works = [
 export default function ProfilePage() {
   const [name, setName] = useState("Yükleniyor...");
   const [email, setEmail] = useState("");
+  const [city, setCity] = useState("");
+  const [specialty, setSpecialty] = useState("");
+  const [bio, setBio] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -39,8 +43,12 @@ export default function ProfilePage() {
 
       if (userSnap.exists()) {
         const data = userSnap.data();
+
         setName(data.name || "İsimsiz Kullanıcı");
         setEmail(data.email || user.email || "");
+        setCity(data.city || "");
+        setSpecialty(data.specialty || "");
+        setBio(data.bio || "");
       }
     });
 
@@ -58,15 +66,30 @@ export default function ProfilePage() {
           <div className="flex-1">
             <h1 className="text-4xl font-extrabold">{name}</h1>
             <p className="mt-2 font-bold text-[#c46a2b]">{email}</p>
+
+            {city && (
+              <p className="mt-2 text-sm font-bold text-gray-700">
+                📍 {city}
+              </p>
+            )}
+
+            {specialty && (
+              <p className="mt-2 text-sm font-bold text-[#c46a2b]">
+                🎨 {specialty}
+              </p>
+            )}
+
             <p className="mt-3 max-w-3xl leading-7 text-gray-600">
-              Korİz üyesi. Bu alan daha sonra kullanıcının biyografisi, şehir
-              bilgisi ve uzmanlık alanlarıyla doldurulacak.
+              {bio || "Korİz üyesi. Bu kullanıcı henüz biyografi eklemedi."}
             </p>
           </div>
 
-          <button className="rounded-full bg-[#2b1a12] px-6 py-3 font-bold text-white hover:bg-[#c46a2b]">
+          <Link
+            href="/profile/edit"
+            className="rounded-full bg-[#2b1a12] px-6 py-3 font-bold text-white hover:bg-[#c46a2b]"
+          >
             Profili Düzenle
-          </button>
+          </Link>
         </div>
 
         <div className="mt-10 grid gap-4 md:grid-cols-4">
