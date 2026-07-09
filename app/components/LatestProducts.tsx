@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
@@ -82,9 +83,12 @@ export default function LatestProducts() {
                     {product.price} TL
                   </p>
 
-                  <button className="rounded-full bg-[#2b1a12] px-5 py-2 text-sm font-bold text-white hover:bg-[#c46a2b]">
-                    İncele
-                  </button>
+<Link
+  href={`/artwork/${product.id}`}
+  className="rounded-full bg-[#2b1a12] px-5 py-2 text-sm font-bold text-white hover:bg-[#c46a2b]"
+>
+  İncele
+</Link>
                 </div>
               </div>
             </div>
