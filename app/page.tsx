@@ -4,6 +4,7 @@ import Hero from "./components/Hero";
 import Categories from "./components/Categories";
 import FeaturedArtists from "./components/FeaturedArtists";
 import Story from "./components/Story";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <FeaturedArtists />
       <LatestProducts />
       <Story />
+      <Footer />
     </main>
   );
 }
