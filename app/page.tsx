@@ -1,6 +1,8 @@
+import LatestProducts from "./components/LatestProducts";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Categories from "./components/Categories";
+import FeaturedArtists from "./components/FeaturedArtists";
 
 export default function Home() {
   return (
@@ -8,6 +10,8 @@ export default function Home() {
       <Header />
       <Hero />
       <Categories />
+      <FeaturedArtists />
+      <LatestProducts />
     </main>
   );
 }
