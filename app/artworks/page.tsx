@@ -15,6 +15,7 @@ type Artwork = {
   title?: string;
   category?: string;
   artistEmail?: string;
+  artistName?: string;
   price?: string | number;
   image?: string;
   likes?: number;
@@ -289,7 +290,9 @@ export default function ArtworksPage() {
                     </h2>
 
                     <p className="mt-2 text-sm text-gray-500">
-                      {artwork.artistEmail || "Sanatçı bilgisi yok"}
+                      {artwork.artistName ||
+                       artwork.artistEmail ||
+                        "Sanatçı bilgisi yok"}
                     </p>
 
                     <div className="mt-6 flex items-center justify-between gap-4">
